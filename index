@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 9 CS: The Internet vs The World Wide Web</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti CDN for positive reinforcement -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007BA6',
+                        keyword: '#C62828',
+                        bodytext: '#333333',
+                        instruction: '#00796B',
+                        bgsoft: '#F4F7F6',
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Trebuchet MS', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Base Accessibility & Dyslexia-Friendly Styles */
+        body {
+            color: #333333;
+            background-color: #F4F7F6;
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+            transition: background-color 0.3s ease, color 0.3s ease, line-height 0.3s ease, letter-spacing 0.3s ease;
+        }
+
+        /* Wide Spacing Mode for Dyslexia Comfort */
+        body.dyslexia-friendly {
+            line-height: 2.0 !important;
+            letter-spacing: 0.06em !important;
+            word-spacing: 0.15em !important;
+        }
+
+        /* Color Themes for ND Accessibility */
+        body.theme-peach {
+            background-color: #FDF4E7 !important;
+            color: #2D2D2D !important;
+        }
+
+        body.theme-mint {
+            background-color: #EBF5F0 !important;
+            color: #2D2D2D !important;
+        }
+
+        body.theme-dark {
+            background-color: #1A2228 !important;
+            color: #E2E8F0 !important;
+        }
+
+        body.theme-dark .bg-white {
+            background-color: #243038 !important;
+            color: #E2E8F0 !important;
+            border-color: #3A4B56 !important;
+        }
+
+        body.theme-dark .bg-gray-50,
+        body.theme-dark .bg-gray-100 {
+            background-color: #1E2930 !important;
+            color: #CBD5E1 !important;
+        }
+
+        body.theme-dark .text-bodytext {
+            color: #E2E8F0 !important;
+        }
+
+        body.theme-dark .kw {
+            color: #FF6B6B !important;
+        }
+
+        /* Focus outlines for clear tab navigation */
+        button:focus, [tabindex="0"]:focus, input:focus {
+            outline: 3px solid #007BA6 !important;
+            outline-offset: 3px !important;
+        }
+
+        /* Card Transitions */
+        .interactive-card {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        
+        .interactive-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Key term styling */
+        .kw {
+            color: #C62828;
+            font-weight: 700;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E2E8F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #007BA6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-16">
+
+    <!-- ACCESSIBILITY & CONTROLS HEADER -->
+    <header class="bg-white border-b-2 border-[#007BA6] sticky top-0 z-30 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-2">
+                <span class="bg-[#007BA6] text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Year 9 CS</span>
+                <span class="text-sm font-semibold text-[#00796B]">Internet vs WWW</span>
+            </div>
+
+            <!-- Visual Comfort & Font Controls -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+                <button onclick="toggleDyslexiaMode()" id="dyslexia-btn" class="px-2.5 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-100 font-medium text-gray-700" title="Toggle extra line and letter spacing">
+                    📖 Readable Spacing
+                </button>
+                <div class="h-4 w-px bg-gray-300 mx-1 hidden sm:block"></div>
+                <button onclick="setTheme('default')" class="px-2.5 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-100 font-medium text-gray-700" title="Default Soft White">Default</button>
+                <button onclick="setTheme('peach')" class="px-2.5 py-1.5 rounded border border-amber-200 bg-[#FDF4E7] hover:brightness-95 font-medium text-amber-900" title="Warm Peach Tint">Peach</button>
+                <button onclick="setTheme('mint')" class="px-2.5 py-1.5 rounded border border-emerald-200 bg-[#EBF5F0] hover:brightness-95 font-medium text-emerald-900" title="Soft Mint Tint">Mint</button>
+                <button onclick="setTheme('dark')" class="px-2.5 py-1.5 rounded border border-gray-700 bg-gray-800 text-gray-100 hover:bg-gray-700 font-medium" title="Dark Mode">Dark</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="max-w-4xl mx-auto px-4 pt-6">
+
+        <!-- TITLE & MODULE BRIEF -->
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-[#007BA6] mb-2">
+                The Internet vs The World Wide Web
+            </h1>
+            <p class="text-[#00796B] font-semibold text-base mb-3">
+                Instruction: Complete the 4 levels below to master key vocabulary before our live lesson! No timers, no pressure—take your time.
+            </p>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                <strong class="kw">Quick Fact:</strong> The <strong class="kw">Internet</strong> is the physical network of connected cables, routers, and computers (the hardware roads). The <strong class="kw">World Wide Web</strong> is just one service that runs on top of it (the web pages and browsers)!
+            </p>
+        </div>
+
+        <!-- PROGRESS & LEVEL NAVIGATOR -->
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-[#00796B]">Your Progress</span>
+                <span class="text-sm font-bold text-[#007BA6]" id="progress-text">0 / 4 Levels Completed</span>
+            </div>
+            
+            <!-- Visual Progress Bar -->
+            <div class="w-full bg-gray-200 h-3 rounded-full overflow-hidden mb-4">
+                <div id="progress-bar" class="bg-[#007BA6] h-full w-0 transition-all duration-500 ease-out"></div>
+            </div>
+
+            <!-- Level Selector Tabs -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs sm:text-sm font-semibold">
+                <button id="nav-lvl-1" onclick="switchLevel(1)" class="p-2.5 rounded-lg border-2 border-[#007BA6] bg-[#007BA6] text-white">
+                    1. Term Matcher
+                </button>
+                <button id="nav-lvl-2" onclick="switchLevel(2)" class="p-2.5 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 hover:border-[#007BA6]">
+                    2. Fill the Gaps
+                </button>
+                <button id="nav-lvl-3" onclick="switchLevel(3)" class="p-2.5 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 hover:border-[#007BA6]">
+                    3. Real Sorting
+                </button>
+                <button id="nav-lvl-4" onclick="switchLevel(4)" class="p-2.5 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 hover:border-[#007BA6]">
+                    4. CS Pro Summary
+                </button>
+            </div>
+        </div>
+
+        <!-- LEVEL 1: TERM MATCHER -->
+        <section id="level-1" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+            <div class="border-b pb-4 mb-6">
+                <span class="text-xs font-bold text-white bg-[#007BA6] px-2.5 py-1 rounded-full uppercase">Level 1</span>
+                <h2 class="text-xl font-bold text-[#007BA6] mt-2">Term Matcher</h2>
+                <p class="text-[#00796B] font-medium text-sm mt-1">
+                    Instruction: Click a key term on the left, then click its matching definition on the right.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Key Terms</h3>
+                    <div id="l1-terms" class="space-y-2.5"></div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Simple Definitions</h3>
+                    <div id="l1-definitions" class="space-y-2.5"></div>
+                </div>
+            </div>
+
+            <div id="l1-feedback" class="mt-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 hidden">
+                <p class="font-bold text-emerald-800" id="l1-feedback-text"></p>
+                <button id="l1-next-btn" onclick="switchLevel(2)" class="mt-3 px-5 py-2.5 bg-[#007BA6] text-white font-bold rounded-lg hover:bg-opacity-90">
+                    On to Level 2 →
+                </button>
+            </div>
+        </section>
+
+        <!-- LEVEL 2: FILL IN THE GAPS -->
+        <section id="level-2" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hidden">
+            <div class="border-b pb-4 mb-6">
+                <span class="text-xs font-bold text-white bg-[#007BA6] px-2.5 py-1 rounded-full uppercase">Level 2</span>
+                <h2 class="text-xl font-bold text-[#007BA6] mt-2">Fill in the Gaps</h2>
+                <p class="text-[#00796B] font-medium text-sm mt-1">
+                    Instruction: Click a term from the Word Bank, then click the gap where it belongs in the sentence.
+                </p>
+            </div>
+
+            <!-- Word Bank -->
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl mb-6">
+                <p class="text-xs font-bold text-[#007BA6] uppercase tracking-wider mb-2">Word Bank</p>
+                <div id="l2-wordbank" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Sentences with Gaps -->
+            <div id="l2-sentences" class="space-y-4"></div>
+
+            <div class="mt-6 flex flex-wrap gap-3 items-center justify-between">
+                <button onclick="checkLevel2()" class="px-6 py-2.5 bg-[#007BA6] text-white font-bold rounded-lg hover:bg-opacity-90">
+                    Check My Answers
+                </button>
+                <div id="l2-feedback" class="font-bold text-sm"></div>
+            </div>
+        </section>
+
+        <!-- LEVEL 3: REAL-WORLD SORTING -->
+        <section id="level-3" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hidden">
+            <div class="border-b pb-4 mb-6">
+                <span class="text-xs font-bold text-white bg-[#007BA6] px-2.5 py-1 rounded-full uppercase">Level 3</span>
+                <h2 class="text-xl font-bold text-[#007BA6] mt-2">Real-World Sorting</h2>
+                <p class="text-[#00796B] font-medium text-sm mt-1">
+                    Instruction: Read the real-world tech scenario and decide whether it belongs to the Internet or the World Wide Web.
+                </p>
+            </div>
+
+            <div id="l3-card-container"></div>
+
+            <div class="mt-4 flex justify-between items-center text-xs text-gray-500 font-semibold">
+                <span id="l3-counter">Scenario 1 of 4</span>
+                <span class="text-[#00796B]">Think: Hardware network vs Web pages</span>
+            </div>
+        </section>
+
+        <!-- LEVEL 4: EXPLAIN LIKE A CS PRO -->
+        <section id="level-4" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hidden">
+            <div class="border-b pb-4 mb-6">
+                <span class="text-xs font-bold text-white bg-[#007BA6] px-2.5 py-1 rounded-full uppercase">Level 4</span>
+                <h2 class="text-xl font-bold text-[#007BA6] mt-2">CS Pro Summary Builder</h2>
+                <p class="text-[#00796B] font-medium text-sm mt-1">
+                    Instruction: Select the missing keywords to assemble a clear 2-sentence summary explaining the difference. Key terms will show in <strong class="kw">Bold Red (#C62828)</strong>.
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Sentence 1 -->
+                <div class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+                    <p class="text-sm font-semibold mb-3 text-bodytext">
+                        1. The <strong class="kw">Internet</strong> is best described as...
+                    </p>
+                    <div id="l4-q1-options" class="space-y-2"></div>
+                </div>
+
+                <!-- Sentence 2 -->
+                <div class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+                    <p class="text-sm font-semibold mb-3 text-bodytext">
+                        2. The <strong class="kw">World Wide Web</strong> is best described as...
+                    </p>
+                    <div id="l4-q2-options" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-wrap gap-3 items-center justify-between">
+                <button onclick="checkLevel4()" class="px-6 py-2.5 bg-[#007BA6] text-white font-bold rounded-lg hover:bg-opacity-90">
+                    Verify Summary
+                </button>
+                <div id="l4-feedback" class="font-bold text-sm"></div>
+            </div>
+        </section>
+
+        <!-- COMPLETED MODULE CELEBRATION BOX -->
+        <div id="completion-modal" class="bg-emerald-50 border-2 border-emerald-500 p-6 rounded-xl text-center mt-6 hidden">
+            <div class="text-4xl mb-2">🎉 💻</div>
+            <h3 class="text-2xl font-bold text-emerald-800 mb-1">Awesome Job! Level 4 Mastered!</h3>
+            <p class="text-emerald-700 font-medium mb-4">
+                You now know the exact difference between the physical <strong class="kw">Internet</strong> network and the <strong class="kw">World Wide Web</strong> service!
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <button onclick="copySummaryText()" class="px-5 py-2.5 bg-[#007BA6] text-white font-bold rounded-lg hover:bg-opacity-90">
+                    📋 Copy Summary to Clipboard
+                </button>
+                <button onclick="resetAllProgress()" class="px-5 py-2.5 border-2 border-[#007BA6] text-[#007BA6] font-bold rounded-lg hover:bg-blue-50">
+                    Try Again
+                </button>
+            </div>
+            <p id="copy-confirm" class="text-xs text-emerald-800 font-bold mt-2 hidden">Copied to clipboard!</p>
+        </div>
+
+    </main>
+
+    <script>
+        /* GLOBAL APP STATE */
+        let currentLevel = 1;
+        let completedLevels = [false, false, false, false];
+
+        /* DATASETS (YEAR 9 LEVEL) */
+        
+        // Level 1: Year 9 Friendly Definitions
+        const l1Data = [
+            { id: 'internet', term: 'Internet', def: 'The global network of physical cables, routers, and hardware computers.' },
+            { id: 'www', term: 'World Wide Web', def: 'The collection of web pages, photos, and videos you open using a browser.' },
+            { id: 'url', term: 'URL', def: 'The unique web address typed into a browser to find a specific website.' },
+            { id: 'webserver', term: 'Web Server', def: 'A computer connected to the internet that stores and sends out website files.' },
+            { id: 'http', term: 'HTTP / HTTPS', def: 'The standard rules used for sending web page data safely across the web.' }
+        ];
+
+        // Level 2: Sentence Cloze
+        const l2Data = [
+            {
+                text: "The {0} is made of physical hardware like optic cables, wireless routers, and servers.",
+                answer: "Internet"
+            },
+            {
+                text: "When you open a website on your phone, your browser requests pages from the {1}.",
+                answer: "World Wide Web"
+            },
+            {
+                text: "Every website page has its own unique address called a {2}.",
+                answer: "URL"
+            },
+            {
+                text: "Website files are stored safely on a connected computer called a web {3}.",
+                answer: "server"
+            }
+        ];
+        const l2WordBank = ["Internet", "World Wide Web", "URL", "server", "email"];
+
+        // Level 3: Real-World Sorting Scenarios
+        const l3Scenarios = [
+            {
+                title: "Scenario 1",
+                desc: "An undersea fibre-optic cable laid along the seabed across the Atlantic Ocean.",
+                options: ["Internet (Hardware Network)", "World Wide Web (Web Pages & Browsers)"],
+                correct: 0,
+                explain: "Spot on! Cables and hardware make up the physical Internet."
+            },
+            {
+                title: "Scenario 2",
+                desc: "Opening Google Chrome to look up a recipe and clicking on a link.",
+                options: ["Internet (Hardware Network)", "World Wide Web (Web Pages & Browsers)"],
+                correct: 1,
+                explain: "Spot on! Web browsers, web pages, and links make up the World Wide Web."
+            },
+            {
+                title: "Scenario 3",
+                desc: "A Wi-Fi router flashing its lights as it passes data packets into your house.",
+                options: ["Internet (Hardware Network)", "World Wide Web (Web Pages & Browsers)"],
+                correct: 0,
+                explain: "Spot on! Routers are physical networking devices on the Internet."
+            },
+            {
+                title: "Scenario 4",
+                desc: "Viewing an online store page that has an address starting with https://",
+                options: ["Internet (Hardware Network)", "World Wide Web (Web Pages & Browsers)"],
+                correct: 1,
+                explain: "Spot on! HTTPS and website pages belong to the World Wide Web service."
+            }
+        ];
+        let l3CurrentIdx = 0;
+
+        // Level 4: CS Pro Summary Choices
+        const l4Choices = {
+            q1: [
+                { text: "the global physical network of connected cables, routers, and computer hardware.", correct: true },
+                { text: "a browser app like Google Chrome or Safari that you download.", correct: false }
+            ],
+            q2: [
+                { text: "a service of interlinked web pages and media running ON TOP of the internet.", correct: true },
+                { text: "the electrical wires that connect your Wi-Fi router to the telephone pole.", correct: false }
+            ]
+        };
+
+        /* SELECTION TRACKERS */
+        let l1SelectedTerm = null;
+        let l1SelectedDef = null;
+        let l1PairsMatched = 0;
+
+        let l2SelectedWord = null;
+        let l2UserAnswers = {};
+
+        let l4Answers = { q1: null, q2: null };
+
+        /* INITIALISATION */
+        window.onload = function() {
+            renderLevel1();
+            renderLevel2();
+            renderLevel3();
+            renderLevel4();
+            updateProgressUI();
+        };
+
+        /* ACCESSIBILITY TOGGLES */
+        function toggleDyslexiaMode() {
+            document.body.classList.toggle('dyslexia-friendly');
+            const btn = document.getElementById('dyslexia-btn');
+            if (document.body.classList.contains('dyslexia-friendly')) {
+                btn.classList.add('bg-[#007BA6]', 'text-white');
+                btn.classList.remove('bg-white', 'text-gray-700');
+            } else {
+                btn.classList.remove('bg-[#007BA6]', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-700');
+            }
+        }
+
+        function setTheme(theme) {
+            document.body.className = "min-h-screen pb-16" + (document.body.classList.contains('dyslexia-friendly') ? ' dyslexia-friendly' : '');
+            if (theme !== 'default') {
+                document.body.classList.add('theme-' + theme);
+            }
+        }
+
+        /* LEVEL NAVIGATION */
+        function switchLevel(lvl) {
+            currentLevel = lvl;
+            for (let i = 1; i <= 4; i++) {
+                const sec = document.getElementById(`level-${i}`);
+                const nav = document.getElementById(`nav-lvl-${i}`);
+                if (i === lvl) {
+                    sec.classList.remove('hidden');
+                    nav.classList.remove('bg-gray-50', 'text-gray-600');
+                    nav.classList.add('bg-[#007BA6]', 'text-white', 'border-[#007BA6]');
+                } else {
+                    sec.classList.add('hidden');
+                    nav.classList.remove('bg-[#007BA6]', 'text-white');
+                    nav.classList.add('bg-gray-50', 'text-gray-600');
+                }
+            }
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function markLevelComplete(lvlIndex) {
+            completedLevels[lvlIndex] = true;
+            updateProgressUI();
+            
+            if (completedLevels.every(Boolean)) {
+                document.getElementById('completion-modal').classList.remove('hidden');
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+                }
+            }
+        }
+
+        function updateProgressUI() {
+            const count = completedLevels.filter(Boolean).length;
+            const pct = (count / 4) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('progress-text').innerText = `${count} / 4 Levels Completed`;
+        }
+
+
+        /* LEVEL 1: MATCHING */
+        function renderLevel1() {
+            const termsContainer = document.getElementById('l1-terms');
+            const defsContainer = document.getElementById('l1-definitions');
+            termsContainer.innerHTML = '';
+            defsContainer.innerHTML = '';
+
+            const shuffledTerms = [...l1Data].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...l1Data].sort(() => Math.random() - 0.5);
+
+            shuffledTerms.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `l1-term-${item.id}`;
+                btn.className = "w-full text-left p-3 rounded-lg border-2 border-gray-200 bg-white font-bold text-[#007BA6] interactive-card focus:outline-none";
+                btn.innerText = item.term;
+                btn.onclick = () => selectL1Term(item.id);
+                termsContainer.appendChild(btn);
+            });
+
+            shuffledDefs.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `l1-def-${item.id}`;
+                btn.className = "w-full text-left p-3 rounded-lg border-2 border-gray-200 bg-white text-sm text-bodytext interactive-card focus:outline-none";
+                btn.innerText = item.def;
+                btn.onclick = () => selectL1Def(item.id);
+                defsContainer.appendChild(btn);
+            });
+        }
+
+        function selectL1Term(id) {
+            if (document.getElementById(`l1-term-${id}`).disabled) return;
+            l1Data.forEach(item => {
+                const el = document.getElementById(`l1-term-${item.id}`);
+                if (el && !el.disabled) {
+                    el.classList.remove('border-[#007BA6]', 'bg-blue-50');
+                    el.classList.add('border-gray-200', 'bg-white');
+                }
+            });
+            l1SelectedTerm = id;
+            const target = document.getElementById(`l1-term-${id}`);
+            target.classList.remove('border-gray-200', 'bg-white');
+            target.classList.add('border-[#007BA6]', 'bg-blue-50');
+
+            checkL1Match();
+        }
+
+        function selectL1Def(id) {
+            if (document.getElementById(`l1-def-${id}`).disabled) return;
+            l1Data.forEach(item => {
+                const el = document.getElementById(`l1-def-${item.id}`);
+                if (el && !el.disabled) {
+                    el.classList.remove('border-[#007BA6]', 'bg-blue-50');
+                    el.classList.add('border-gray-200', 'bg-white');
+                }
+            });
+            l1SelectedDef = id;
+            const target = document.getElementById(`l1-def-${id}`);
+            target.classList.remove('border-gray-200', 'bg-white');
+            target.classList.add('border-[#007BA6]', 'bg-blue-50');
+
+            checkL1Match();
+        }
+
+        function checkL1Match() {
+            if (l1SelectedTerm && l1SelectedDef) {
+                if (l1SelectedTerm === l1SelectedDef) {
+                    const termBtn = document.getElementById(`l1-term-${l1SelectedTerm}`);
+                    const defBtn = document.getElementById(`l1-def-${l1SelectedDef}`);
+
+                    termBtn.className = "w-full text-left p-3 rounded-lg border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-800 cursor-default opacity-80";
+                    defBtn.className = "w-full text-left p-3 rounded-lg border-2 border-emerald-500 bg-emerald-50 text-sm text-emerald-900 cursor-default opacity-80";
+                    
+                    termBtn.disabled = true;
+                    defBtn.disabled = true;
+
+                    l1PairsMatched++;
+                    
+                    if (l1PairsMatched === l1Data.length) {
+                        const feedback = document.getElementById('l1-feedback');
+                        const feedbackText = document.getElementById('l1-feedback-text');
+
+                        feedback.classList.remove('hidden');
+                        feedbackText.innerText = "Fantastic! All 5 terms matched correctly.";
+                        markLevelComplete(0);
+                    }
+                } else {
+                    const termBtn = document.getElementById(`l1-term-${l1SelectedTerm}`);
+                    const defBtn = document.getElementById(`l1-def-${l1SelectedDef}`);
+                    
+                    termBtn.classList.add('border-red-400', 'bg-red-50');
+                    defBtn.classList.add('border-red-400', 'bg-red-50');
+
+                    setTimeout(() => {
+                        termBtn.classList.remove('border-red-400', 'bg-red-50', 'border-[#007BA6]', 'bg-blue-50');
+                        defBtn.classList.remove('border-red-400', 'bg-red-50', 'border-[#007BA6]', 'bg-blue-50');
+                        termBtn.classList.add('border-gray-200', 'bg-white');
+                        defBtn.classList.add('border-gray-200', 'bg-white');
+                    }, 600);
+                }
+
+                l1SelectedTerm = null;
+                l1SelectedDef = null;
+            }
+        }
+
+
+        /* LEVEL 2: SENTENCE CLOZE */
+        function renderLevel2() {
+            const wordBankEl = document.getElementById('l2-wordbank');
+            const sentencesEl = document.getElementById('l2-sentences');
+
+            wordBankEl.innerHTML = '';
+            sentencesEl.innerHTML = '';
+
+            l2WordBank.forEach((word) => {
+                const btn = document.createElement('button');
+                btn.id = `wb-word-${word}`;
+                btn.className = "px-3 py-1.5 bg-white border-2 border-[#007BA6] text-[#007BA6] font-bold rounded-md hover:bg-blue-50 text-sm focus:outline-none";
+                btn.innerText = word;
+                btn.onclick = () => selectL2Word(word);
+                wordBankEl.appendChild(btn);
+            });
+
+            l2Data.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = "p-4 border border-gray-200 rounded-lg bg-gray-50 text-sm sm:text-base leading-relaxed";
+                
+                const parts = item.text.split(`{${idx}}`);
+                div.innerHTML = `
+                    <span>${parts[0]}</span>
+                    <button id="l2-slot-${idx}" onclick="fillL2Slot(${idx})" class="inline-block px-3 py-1 mx-1 border-2 border-dashed border-[#007BA6] bg-white text-[#C62828] font-bold rounded min-w-[110px] text-center">
+                        [ Click Word ]
+                    </button>
+                    <span>${parts[1]}</span>
+                `;
+                sentencesEl.appendChild(div);
+            });
+        }
+
+        function selectL2Word(word) {
+            l2SelectedWord = word;
+            l2WordBank.forEach(w => {
+                const btn = document.getElementById(`wb-word-${w}`);
+                if (btn) {
+                    btn.classList.remove('bg-[#007BA6]', 'text-white');
+                    btn.classList.add('bg-white', 'text-[#007BA6]');
+                }
+            });
+            const activeBtn = document.getElementById(`wb-word-${word}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-[#007BA6]');
+                activeBtn.classList.add('bg-[#007BA6]', 'text-white');
+            }
+        }
+
+        function fillL2Slot(slotIdx) {
+            if (!l2SelectedWord) return;
+            l2UserAnswers[slotIdx] = l2SelectedWord;
+            
+            const slotBtn = document.getElementById(`l2-slot-${slotIdx}`);
+            slotBtn.innerText = l2SelectedWord;
+            slotBtn.classList.remove('border-dashed');
+            slotBtn.classList.add('border-solid', 'bg-blue-50');
+        }
+
+        function checkLevel2() {
+            let correctCount = 0;
+            l2Data.forEach((item, idx) => {
+                const slotBtn = document.getElementById(`l2-slot-${idx}`);
+                if (l2UserAnswers[idx] === item.answer) {
+                    slotBtn.className = "inline-block px-3 py-1 mx-1 border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold rounded text-center";
+                    correctCount++;
+                } else {
+                    slotBtn.className = "inline-block px-3 py-1 mx-1 border-2 border-red-500 bg-red-100 text-red-900 font-bold rounded text-center";
+                }
+            });
+
+            const feedbackEl = document.getElementById('l2-feedback');
+            if (correctCount === l2Data.length) {
+                feedbackEl.className = "font-bold text-emerald-700 text-sm";
+                feedbackEl.innerText = "All sentences completed perfectly!";
+                markLevelComplete(1);
+            } else {
+                feedbackEl.className = "font-bold text-red-600 text-sm";
+                feedbackEl.innerText = `${correctCount} / ${l2Data.length} correct. Check the red boxes and try again!`;
+            }
+        }
+
+
+        /* LEVEL 3: REAL-WORLD SORTING */
+        function renderLevel3() {
+            const container = document.getElementById('l3-card-container');
+            const scenario = l3Scenarios[l3CurrentIdx];
+
+            container.innerHTML = `
+                <div class="border-2 border-gray-200 p-5 rounded-xl bg-gray-50">
+                    <span class="text-xs font-bold text-[#00796B] uppercase tracking-wider">${scenario.title}</span>
+                    <p class="text-base sm:text-lg font-semibold text-bodytext mt-2 mb-6">${scenario.desc}</p>
+                    
+                    <div class="space-y-2.5">
+                        ${scenario.options.map((opt, i) => `
+                            <button onclick="answerL3(${i})" class="w-full text-left p-3.5 rounded-lg border-2 border-gray-200 bg-white font-semibold text-bodytext hover:border-[#007BA6] interactive-card focus:outline-none">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="l3-explanation" class="mt-4 p-3 rounded-lg hidden font-medium text-sm"></div>
+                </div>
+            `;
+
+            document.getElementById('l3-counter').innerText = `Scenario ${l3CurrentIdx + 1} of ${l3Scenarios.length}`;
+        }
+
+        function answerL3(optionIdx) {
+            const scenario = l3Scenarios[l3CurrentIdx];
+            const expEl = document.getElementById('l3-explanation');
+            expEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-red-100', 'text-red-900');
+
+            if (optionIdx === scenario.correct) {
+                expEl.classList.add('bg-emerald-100', 'text-emerald-900');
+                expEl.innerText = scenario.explain;
+
+                setTimeout(() => {
+                    if (l3CurrentIdx < l3Scenarios.length - 1) {
+                        l3CurrentIdx++;
+                        renderLevel3();
+                    } else {
+                        expEl.innerText = "Level 3 Completed! Great sorting skill.";
+                        markLevelComplete(2);
+                    }
+                }, 1300);
+            } else {
+                expEl.classList.add('bg-red-100', 'text-red-900');
+                expEl.innerText = "Not quite! Remember: hardware cables = Internet, web pages = World Wide Web.";
+            }
+        }
+
+
+        /* LEVEL 4: CS PRO SUMMARY */
+        function renderLevel4() {
+            const q1Container = document.getElementById('l4-q1-options');
+            const q2Container = document.getElementById('l4-q2-options');
+
+            q1Container.innerHTML = l4Choices.q1.map((item, idx) => `
+                <button onclick="selectL4('q1', ${idx}, ${item.correct})" id="l4-btn-q1-${idx}" class="w-full text-left p-3 bg-white rounded-lg border border-gray-200 text-sm text-bodytext hover:bg-blue-50 focus:outline-none">
+                    ...${item.text}
+                </button>
+            `).join('');
+
+            q2Container.innerHTML = l4Choices.q2.map((item, idx) => `
+                <button onclick="selectL4('q2', ${idx}, ${item.correct})" id="l4-btn-q2-${idx}" class="w-full text-left p-3 bg-white rounded-lg border border-gray-200 text-sm text-bodytext hover:bg-blue-50 focus:outline-none">
+                    ...${item.text}
+                </button>
+            `).join('');
+        }
+
+        function selectL4(question, optionIdx, isCorrect) {
+            l4Answers[question] = isCorrect;
+            
+            const totalOptions = l4Choices[question].length;
+            for (let i = 0; i < totalOptions; i++) {
+                const btn = document.getElementById(`l4-btn-${question}-${i}`);
+                if (btn) {
+                    btn.classList.remove('border-[#007BA6]', 'bg-blue-50', 'font-semibold');
+                    btn.classList.add('border-gray-200', 'bg-white');
+                }
+            }
+
+            const activeBtn = document.getElementById(`l4-btn-${question}-${optionIdx}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-gray-200', 'bg-white');
+                activeBtn.classList.add('border-[#007BA6]', 'bg-blue-50', 'font-semibold');
+            }
+        }
+
+        function checkLevel4() {
+            const feedbackEl = document.getElementById('l4-feedback');
+
+            if (l4Answers.q1 === null || l4Answers.q2 === null) {
+                feedbackEl.className = "font-bold text-amber-700 text-sm";
+                feedbackEl.innerText = "Please select an ending for both sentences!";
+                return;
+            }
+
+            if (l4Answers.q1 === true && l4Answers.q2 === true) {
+                feedbackEl.className = "font-bold text-emerald-700 text-sm";
+                feedbackEl.innerText = "Perfect CS Pro summary! Level 4 complete!";
+                markLevelComplete(3);
+            } else {
+                feedbackEl.className = "font-bold text-red-600 text-sm";
+                feedbackEl.innerText = "Almost! Double check which option describes hardware vs web pages.";
+            }
+        }
+
+        /* COPY SUMMARY FEATURE */
+        function copySummaryText() {
+            const textToCopy = "The Internet is the global physical network of connected cables, routers, and computer hardware. The World Wide Web is a service of interlinked web pages and media running ON TOP of the internet.";
+            
+            // Clipboard fallback
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = textToCopy;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            const confirmEl = document.getElementById('copy-confirm');
+            confirmEl.classList.remove('hidden');
+            setTimeout(() => confirmEl.classList.add('hidden'), 2500);
+        }
+
+        /* RESET FUNCTION */
+        function resetAllProgress() {
+            completedLevels = [false, false, false, false];
+            l1PairsMatched = 0;
+            l2UserAnswers = {};
+            l3CurrentIdx = 0;
+            l4Answers = { q1: null, q2: null };
+            
+            document.getElementById('completion-modal').classList.add('hidden');
+            document.getElementById('l1-feedback').classList.add('hidden');
+            
+            renderLevel1();
+            renderLevel2();
+            renderLevel3();
+            renderLevel4();
+            updateProgressUI();
+            switchLevel(1);
+        }
+    </script>
+</body>
+</html>
